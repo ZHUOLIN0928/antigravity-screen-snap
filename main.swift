@@ -209,7 +209,11 @@ class AntigravitySnapDaemon: NSObject {
         let apps = NSWorkspace.shared.runningApplications
         guard let antigravity = apps.first(where: { isAntigravityProcess($0) }) else { return }
 
-        antigravity.activate(options: [.activateIgnoringOtherApps])
+        if #available(macOS 14.0, *) {
+            antigravity.activate()
+        } else {
+            antigravity.activate(options: [.activateIgnoringOtherApps])
+        }
 
         // 4. 等待窗口切换平滑落地后，执行粘贴
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
